@@ -1,14 +1,16 @@
 package com.example.Project;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 
+@ComponentScan(basePackages = "com.example.Project")
 public class Main {
     public static void main(String[] args) {
-        try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml")) {
-            CategoryDisplay<?> cabrioletDisplay = context.getBean("cabrioletDisplay", CategoryDisplay.class);
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main.class)) {
+            CategoryDisplay cabrioletDisplay = context.getBean("cabrioletDisplay", CategoryDisplay.class);
             cabrioletDisplay.display();
 
-            CategoryDisplay<?> coupeDisplay = context.getBean("coupeDisplay", CategoryDisplay.class);
+            CoupeDisplay coupeDisplay = context.getBean("coupeDisplay", CoupeDisplay.class);
             coupeDisplay.display();
         }
     }

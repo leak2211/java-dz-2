@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-@Component("cabrioletDisplay")
-public class CategoryDisplay {
+@Component("coupeDisplay")
+public class CoupeDisplay {
     private Category category;
 
     @Autowired
-    @Qualifier("cabriolet")
+    @Qualifier("coupe")
     public void setCategory(Category category) {
         this.category = category;
     }
@@ -22,12 +22,11 @@ public class CategoryDisplay {
 
     @PostConstruct
     public void init() {
-        System.out.println("Инициализация CategoryDisplay для " + category.getName());
+        System.out.println("Инициализация CoupeDisplay для " + category.getName());
     }
 
     @PreDestroy
     public void destroy() {
-        System.out.println("Очистка CategoryDisplay для " + category.getName());
+        System.out.println("Очистка CoupeDisplay для " + category.getName());
     }
-
 }

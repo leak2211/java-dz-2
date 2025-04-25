@@ -1,7 +1,10 @@
 package com.example.Project;
 
-public class Cabriolet implements Category {
+import org.springframework.stereotype.Component;
 
+@Component("cabriolet")
+public class Cabriolet implements Category {
+    @Override
     public String getName() {
         return "Кабриолет";
     }
