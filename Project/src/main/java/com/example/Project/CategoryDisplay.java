@@ -20,6 +20,10 @@ public class CategoryDisplay {
         System.out.println("Категория: " + category.getName());
     }
 
+    public String getCategoryName() {
+        return category.getName();
+    }
+
     @PostConstruct
     public void init() {
         System.out.println("Инициализация CategoryDisplay для " + category.getName());
@@ -29,5 +33,4 @@ public class CategoryDisplay {
     public void destroy() {
         System.out.println("Очистка CategoryDisplay для " + category.getName());
     }
-
 }

@@ -20,6 +20,10 @@ public class CoupeDisplay {
         System.out.println("Категория: " + category.getName());
     }
 
+    public String getCategoryName() {
+        return category.getName();
+    }
+
     @PostConstruct
     public void init() {
         System.out.println("Инициализация CoupeDisplay для " + category.getName());
