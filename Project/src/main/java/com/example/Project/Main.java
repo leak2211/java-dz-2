@@ -1,13 +1,15 @@
 package com.example.Project;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Main {
     public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml")) {
+            CategoryDisplay<?> cabrioletDisplay = context.getBean("cabrioletDisplay", CategoryDisplay.class);
+            cabrioletDisplay.display();
 
-        CategoryViewer<Category> viewer = (CategoryViewer<Category>) context.getBean("categoryViewer");
-        viewer.display();
+            CategoryDisplay<?> coupeDisplay = context.getBean("coupeDisplay", CategoryDisplay.class);
+            coupeDisplay.display();
+        }
     }
 }

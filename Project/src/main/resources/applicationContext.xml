@@ -1,14 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <!-- Определение бина для категории "Кабриолет" -->
+    <bean id="cabriolet" class="com.example.Project.Cabriolet"/>
 
-    <bean id="cypeCategory" class="com.example.TypeCategory" />
+    <!-- Определение бина для категории "Купе" -->
+    <bean id="coupe" class="com.example.Project.Coupe"/>
 
+    <!-- Определение бина для отображения категории "Кабриолет" -->
+    <bean id="cabrioletDisplay" class="com.example.Project.CategoryDisplay" scope="singleton" init-method="init" destroy-method="destroy">
+        <property name="category" ref="cabriolet"/>
 
-    <bean id="categoryViewer" class="com.example.CategoryViewer">
-        <property name="category" ref="cypeCategory" />
+    </bean>
+
+    <!-- Определение бина для отображения категории "Купе" -->
+    <bean id="coupeDisplay" class="com.example.Project.CategoryDisplay" scope="singleton" init-method="init" destroy-method="destroy">
+        <property name="category" ref="coupe"/>
+
     </bean>
 
 </beans>
