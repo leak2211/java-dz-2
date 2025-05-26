@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Добавить категорию</title>
+</head>
+<body>
+    <h1>Добавить новую категорию</h1>
+    <form action="/categories/add" method="post">
+        <label for="name">Название категории:</label>
+        <input type="text" id="name" name="name" required/>
+        <button type="submit">Добавить</button>
+    </form>
+    <a href="/categories/list">Вернуться к списку категорий</a>
+</body>
+</html>

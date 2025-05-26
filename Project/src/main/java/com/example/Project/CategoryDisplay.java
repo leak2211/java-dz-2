@@ -2,18 +2,31 @@ package com.example.Project;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-@Component("cabrioletDisplay")
+@Component
 public class CategoryDisplay {
     private Category category;
+    private String id;
 
-    @Autowired
-    @Qualifier("cabriolet")
+    public CategoryDisplay() {
+    }
+
+    public CategoryDisplay(String id, Category category) {
+        this.id = id;
+        this.category = category;
+    }
+
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public void display() {

@@ -1,27 +1,24 @@
 package com.example.Project;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class CategoryController {
-    private final CategoryDisplay cabrioletDisplay;
-    private final CoupeDisplay coupeDisplay;
+    private final List<CategoryDisplay> categoryDisplays = new ArrayList<>();
 
-    @Autowired
-    public CategoryController(
-            @Qualifier("cabrioletDisplay") CategoryDisplay cabrioletDisplay,
-            @Qualifier("coupeDisplay") CoupeDisplay coupeDisplay) {
-        this.cabrioletDisplay = cabrioletDisplay;
-        this.coupeDisplay = coupeDisplay;
+    public CategoryController() {
+        // Инициализация начальными категориями
+        categoryDisplays.add(new CategoryDisplay("category1", new GenericCategory("Кабриолет")));
+        categoryDisplays.add(new CategoryDisplay("category2", new GenericCategory("Купе")));
     }
 
     @GetMapping("/")
@@ -31,75 +28,56 @@ public class CategoryController {
 
     @GetMapping("/categories")
     public String showCategories(Model model) {
-        model.addAttribute("cabrioletName", cabrioletDisplay.getCategoryName());
-        model.addAttribute("coupeName", coupeDisplay.getCategoryName());
-        return "categories";
-    }
-
-    @GetMapping("/calculate")
-    public String calculate(
-            @RequestParam("first") double first,
-            @RequestParam("second") double second,
-            @RequestParam("operation") String operation,
-            Model model) {
-        String result;
-        try {
-            switch (operation.toLowerCase()) {
-                case "add":
-                    result = String.valueOf(first + second);
-                    break;
-                case "subtract":
-                    result = String.valueOf(first - second);
-                    break;
-                case "multiply":
-                    result = String.valueOf(first * second);
-                    break;
-                case "divide":
-                    if (second == 0) {
-                        result = "Ошибка: Деление на ноль";
-                    } else {
-                        result = String.valueOf(first / second);
-                    }
-                    break;
-                default:
-                    result = "Ошибка: Неверная операция. Используйте add, subtract, multiply или divide.";
-            }
-        } catch (Exception e) {
-            result = "Ошибка: Неверные входные данные";
+        List<String> categoryNames = new ArrayList<>();
+        for (CategoryDisplay display : categoryDisplays) {
+            categoryNames.add(display.getCategoryName());
         }
-
-        model.addAttribute("first", first);
-        model.addAttribute("second", second);
-        model.addAttribute("operation", operation);
-        model.addAttribute("result", result);
-        return "result";
+        model.addAttribute("categoryNames", categoryNames);
+        return "categories";
     }
 
     @GetMapping("/categories/list")
     public String listCategories(Model model) {
         List<CategoryItem> categories = new ArrayList<>();
-        categories.add(new CategoryItem("cabrioletDisplay", cabrioletDisplay));
-        categories.add(new CategoryItem("coupeDisplay", coupeDisplay));
+        for (CategoryDisplay display : categoryDisplays) {
+            categories.add(new CategoryItem(display.getId(), display));
+        }
         model.addAttribute("categories", categories);
         return "categories-list";
     }
 
     @GetMapping("/categories/{id}")
     public String showCategoryDetails(@PathVariable("id") String id, Model model) {
-        Object category;
-        if ("cabrioletDisplay".equals(id)) {
-            category = cabrioletDisplay;
-        } else if ("coupeDisplay".equals(id)) {
-            category = coupeDisplay;
-        } else {
-            model.addAttribute("error", "Категория с ID " + id + " не найдена");
-            return "category-details";
+        CategoryDisplay selectedCategory = null;
+        for (CategoryDisplay display : categoryDisplays) {
+            if (display.getId().equals(id)) {
+                selectedCategory = display;
+                break;
+            }
         }
-        model.addAttribute("category", category);
+        if (selectedCategory == null) {
+            model.addAttribute("error", "Категория с ID " + id + " не найдена");
+        } else {
+            model.addAttribute("category", selectedCategory);
+        }
         return "category-details";
     }
 
-    // Вспомогательный класс для передачи id и объекта
+    @GetMapping("/categories/add")
+    public String showAddCategoryForm(Model model) {
+        model.addAttribute("category", new GenericCategory());
+        return "add-category";
+    }
+
+    @PostMapping("/categories/add")
+    public String addCategory(@RequestParam("name") String name) {
+        String id = "category" + UUID.randomUUID().toString().substring(0, 8);
+        GenericCategory newCategory = new GenericCategory(name);
+        CategoryDisplay newDisplay = new CategoryDisplay(id, newCategory);
+        categoryDisplays.add(newDisplay);
+        return "redirect:/categories/list";
+    }
+
     public static class CategoryItem {
         private final String id;
         private final Object category;

@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Категории автомобилей</title>
-    <meta charset="UTF-8"/>
+    <title>Категории</title>
 </head>
 <body>
-    <h1>Категории автомобилей</h1>
-    <p>Категория 1: <span th:text="${cabrioletName}"></span></p>
-    <p>Категория 2: <span th:text="${coupeName}"></span></p>
+    <h1>Категории</h1>
+    <ul>
+        <li th:each="name : ${categoryNames}">
+            <span th:text="${name}"></span>
+        </li>
+    </ul>
+    <a href="/categories/list">Перейти к списку категорий</a>
+    <a href="/categories/add">Добавить категорию</a>
 </body>
 </html>
