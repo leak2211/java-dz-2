@@ -1,22 +1,41 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Список категорий</title>
 </head>
 <body>
-    <h1>Список категорий</h1>
-    <div th:if="${error != null}">
-        <p style="color: red;" th:text="${error}"></p>
-    </div>
-    <div th:if="${message != null}">
-        <p style="color: green;" th:text="${message}"></p>
-    </div>
-    <ul>
-        <li th:each="category : ${categories}">
-            <a th:href="@{/categories/{id}(id=${category.id})}" th:text="${category.category.categoryName}"></a>
-        </li>
-    </ul>
-    <a href="/categories/add">Добавить категорию</a>
-    <a href="/categories">Вернуться к категориям</a>
+    <h2>Список категорий</h2>
+    <form th:action="@{/categories/list}" method="get">
+        <label for="width">Ширина (м):</label>
+        <input type="number" id="width" name="width" step="0.1" th:value="${width}"/>
+        <label for="height">Высота (м):</label>
+        <input type="number" id="height" name="height" step="0.1" th:value="${height}"/>
+        <button type="submit">Фильтровать</button>
+    </form>
+    <a th:href="@{/categories/determine}">Определить тип машины</a>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Категория</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="category : ${categories}">
+                <td th:text="${category.id}">ID</td>
+                <td th:text="${category.category.categoryName}">Название</td>
+                <td>
+                    <a th:href="@{/categories/{id}(id=${category.id})}">Подробности</a>
+                    <form th:action="@{/categories/{id}(id=${category.id})}" method="post">
+                        <input type="hidden" name="_method" value="DELETE"/>
+                        <button type="submit">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/categories/add}">Добавить категорию</a>
 </body>
 </html>

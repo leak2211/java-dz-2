@@ -12,9 +12,10 @@ import java.util.UUID;
 @Controller
 public class CategoryController {
     private final List<CategoryDisplay> categoryDisplays = new ArrayList<>();
+    private final CarTypeService carTypeService;
 
-    public CategoryController() {
-        // Инициализация начальными категориями
+    public CategoryController(CarTypeService carTypeService) {
+        this.carTypeService = carTypeService;
         categoryDisplays.add(new CategoryDisplay("category1", new GenericCategory("Кабриолет")));
         categoryDisplays.add(new CategoryDisplay("category2", new GenericCategory("Купе")));
     }
@@ -35,13 +36,44 @@ public class CategoryController {
     }
 
     @GetMapping("/categories/list")
-    public String listCategories(Model model) {
+    public String listCategories(Model model, 
+            @RequestParam(value = "width", required = false) Double width,
+            @RequestParam(value = "height", required = false) Double height) {
         List<CategoryItem> categories = new ArrayList<>();
         for (CategoryDisplay display : categoryDisplays) {
-            categories.add(new CategoryItem(display.getId(), display));
+            if (width != null && height != null) {
+                if (carTypeService.matchesCategory(display.getCategoryName(), width, height)) {
+                    categories.add(new CategoryItem(display.getId(), display));
+                }
+            } else {
+                categories.add(new CategoryItem(display.getId(), display));
+            }
         }
         model.addAttribute("categories", categories);
+        model.addAttribute("width", width);
+        model.addAttribute("height", height);
         return "categories-list";
+    }
+
+    @GetMapping("/categories/determine")
+    public String showDetermineForm(Model model) {
+        model.addAttribute("width", "");
+        model.addAttribute("height", "");
+        return "determine-category";
+    }
+
+    @PostMapping("/categories/determine")
+    public String determineCategory(
+            @RequestParam("width") Double width,
+            @RequestParam("height") Double height,
+            RedirectAttributes redirectAttributes) {
+        if (width == null || height == null || width <= 0 || height <= 0) {
+            redirectAttributes.addFlashAttribute("error", "Ширина и высота должны быть положительными числами");
+            return "redirect:/categories/determine";
+        }
+        String carType = carTypeService.determineCarType(width, height);
+        redirectAttributes.addFlashAttribute("message", "Тип машины: " + carType);
+        return "redirect:/categories/determine";
     }
 
     @GetMapping("/categories/{id}")

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Определить тип машины</title>
+</head>
+<body>
+    <h2>Определить тип машины</h2>
+    <div th:if="${message}" th:text="${message}"></div>
+    <div th:if="${error}" th:text="${error}"></div>
+    <form th:action="@{/categories/determine}" method="post">
+        <label for="width">Ширина (м):</label>
+        <input type="number" id="width" name="width" step="0.1" th:value="${width}"/>
+        <label for="height">Высота (м):</label>
+        <input type="number" id="height" name="height" step="0.1" th:value="${height}"/>
+        <button type="submit">Определить</button>
+    </form>
+    <a th:href="@{/categories/list}">Вернуться к списку категорий</a>
+</body>
+</html>
