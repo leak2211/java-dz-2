@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 public class CategoryDisplay {
     private Category category;
 
+    public CategoryDisplay() {
+    }
+
     @Autowired
     @Qualifier("cabriolet")
     public void setCategory(Category category) {
@@ -26,11 +29,11 @@ public class CategoryDisplay {
 
     @PostConstruct
     public void init() {
-        System.out.println("Инициализация CategoryDisplay для " + category.getName());
+        System.out.println("Инициализация CategoryDisplay для " + (category != null ? category.getName() : "null"));
     }
 
     @PreDestroy
     public void destroy() {
-        System.out.println("Очистка CategoryDisplay для " + category.getName());
+        System.out.println("Очистка CategoryDisplay для " + (category != null ? category.getName() : "null"));
     }
 }

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Список категорий</title>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<h1>Список категорий</h1>
+<ul>
+    <li th:each="category : ${categories}">
+        <a th:href="@{/categories/{id}(id=${category.class.simpleName == 'CategoryDisplay' ? 'cabrioletDisplay' : 'coupeDisplay'})}"
+           th:text="${category.getCategoryName()}"></a>
+    </li>
+</ul>
+<a href="/categories">Вернуться к категориям</a>
+<a href="/calculate?first=10&second=5&operation=add">Пример калькулятора</a>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Детали категории</title>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<h1>Детали категории</h1>
+<div th:if="${error}">
+    <p th:text="${error}"></p>
+</div>
+<div th:unless="${error}">
+    <p>Категория: <span th:text="${category.getCategoryName()}"></span></p>
+</div>
+<a href="/categories/list">Вернуться к списку категорий</a>
+<a href="/categories">Вернуться к категориям</a>
+</body>
+</html>
