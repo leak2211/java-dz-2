@@ -29,6 +29,11 @@ public class CategoryDisplay {
         return id;
     }
 
+    // Новый геттер для доступа к category
+    public Category getCategory() {
+        return category;
+    }
+
     public void display() {
         System.out.println("Категория: " + (category != null ? category.getName() : "null"));
     }

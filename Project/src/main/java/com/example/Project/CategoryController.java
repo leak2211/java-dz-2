@@ -2,10 +2,8 @@ package com.example.Project;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,13 +46,7 @@ public class CategoryController {
 
     @GetMapping("/categories/{id}")
     public String showCategoryDetails(@PathVariable("id") String id, Model model) {
-        CategoryDisplay selectedCategory = null;
-        for (CategoryDisplay display : categoryDisplays) {
-            if (display.getId().equals(id)) {
-                selectedCategory = display;
-                break;
-            }
-        }
+        CategoryDisplay selectedCategory = findCategoryById(id);
         if (selectedCategory == null) {
             model.addAttribute("error", "Категория с ID " + id + " не найдена");
         } else {
@@ -70,12 +62,56 @@ public class CategoryController {
     }
 
     @PostMapping("/categories/add")
-    public String addCategory(@RequestParam("name") String name) {
+    public String addCategory(@RequestParam("name") String name, RedirectAttributes redirectAttributes) {
+        if (name == null || name.trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Название категории не может быть пустым");
+            return "redirect:/categories/add";
+        }
         String id = "category" + UUID.randomUUID().toString().substring(0, 8);
         GenericCategory newCategory = new GenericCategory(name);
         CategoryDisplay newDisplay = new CategoryDisplay(id, newCategory);
         categoryDisplays.add(newDisplay);
         return "redirect:/categories/list";
+    }
+
+    @PatchMapping("/categories/{id}")
+    public String updateCategory(
+            @PathVariable("id") String id,
+            @RequestParam("name") String name,
+            RedirectAttributes redirectAttributes) {
+        if (name == null || name.trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Название категории не может быть пустым");
+            return "redirect:/categories/" + id;
+        }
+        CategoryDisplay categoryDisplay = findCategoryById(id);
+        if (categoryDisplay == null) {
+            redirectAttributes.addFlashAttribute("error", "Категория с ID " + id + " не найдена");
+            return "redirect:/categories/list";
+        }
+        ((GenericCategory) categoryDisplay.getCategory()).setName(name);
+        redirectAttributes.addFlashAttribute("message", "Категория успешно обновлена");
+        return "redirect:/categories/" + id;
+    }
+
+    @DeleteMapping("/categories/{id}")
+    public String deleteCategory(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
+        CategoryDisplay categoryDisplay = findCategoryById(id);
+        if (categoryDisplay == null) {
+            redirectAttributes.addFlashAttribute("error", "Категория с ID " + id + " не найдена");
+            return "redirect:/categories/list";
+        }
+        categoryDisplays.remove(categoryDisplay);
+        redirectAttributes.addFlashAttribute("message", "Категория успешно удалена");
+        return "redirect:/categories/list";
+    }
+
+    private CategoryDisplay findCategoryById(String id) {
+        for (CategoryDisplay display : categoryDisplays) {
+            if (display.getId().equals(id)) {
+                return display;
+            }
+        }
+        return null;
     }
 
     public static class CategoryItem {

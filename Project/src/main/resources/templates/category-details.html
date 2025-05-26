@@ -6,10 +6,24 @@
 <body>
     <h1>Детали категории</h1>
     <div th:if="${error != null}">
-        <p th:text="${error}"></p>
+        <p style="color: red;" th:text="${error}"></p>
+    </div>
+    <div th:if="${message != null}">
+        <p style="color: green;" th:text="${message}"></p>
     </div>
     <div th:if="${category != null}">
         <p>Название: <span th:text="${category.categoryName}"></span></p>
+        <h2>Обновить категорию</h2>
+        <form th:action="@{/categories/{id}(id=${category.id})}" method="post">
+            <input type="hidden" name="_method" value="PATCH">
+            <label for="name">Новое название:</label>
+            <input type="text" id="name" name="name" th:value="${category.categoryName}" required/>
+            <button type="submit">Обновить</button>
+        </form>
+        <form th:action="@{/categories/{id}(id=${category.id})}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" onclick="return confirm('Вы уверены, что хотите удалить категорию?')">Удалить</button>
+        </form>
     </div>
     <a href="/categories/list">Вернуться к списку категорий</a>
     <a href="/categories/add">Добавить категорию</a>
