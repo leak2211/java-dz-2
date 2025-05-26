@@ -10,9 +10,6 @@ import org.springframework.stereotype.Component;
 public class CoupeDisplay {
     private Category category;
 
-    public CoupeDisplay() {
-    }
-
     @Autowired
     @Qualifier("coupe")
     public void setCategory(Category category) {
@@ -20,11 +17,11 @@ public class CoupeDisplay {
     }
 
     public void display() {
-        System.out.println("Категория: " + category.getName());
+        System.out.println("Категория: " + (category != null ? category.getName() : "null"));
     }
 
     public String getCategoryName() {
-        return category.getName();
+        return category != null ? category.getName() : "Не определено";
     }
 
     @PostConstruct
